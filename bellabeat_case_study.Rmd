@@ -1,0 +1,132 @@
+---
+title: "Bellabeat Case Study"
+name: "Scott Caprisecca"
+output: html_notebook
+---
+
+## Ask
+
+Some of the questions to be answered are:
+1. What are some trends in smart device usage?
+- what ways are they using it/what are they tracking most?
+- used for sports/fitness or more general activity?
+
+2. How could these trends apply to Bellabeat customers?
+- knowing how they use it, develop those features more
+
+3. How could these trends help influence Bellabeat marketing strategy?
+- knowing how customers are using their devices will allow them to adjust marketing to hightlight what their services can offer
+- may adjust where they market (digital, print media, tv/online video, SM) 
+
+### Business Task
+The goal is to analyze how people currently use their fitness trackers and smart devices. What is most important to the user and how can we highlight Bellabeat's products to those potential customers. 
+
+
+### Stakeholders (for me, take out of report)
+Urska Srsen - cofounded and Chief Creative Officer
+- would want high level, current state and what can they do to reach more of their market?
+- probably likes to see more grapics vs just numbers
+
+Sando Mur - cofunder, mathematician and key member of executive team
+- has control on making changes and getting things done
+- would want to see numbers behind recommendations
+
+DA team
+
+
+## Prepare
+The data is available on Kaggle and is currently stored in multiple Excel files. Some of the files have been merged together to allow for an easier view of the data.
+
+The data is organized in long format.
+
+The data is from Fitbit fitness trackers which require the user to keep them charged and wear them daily. At some point during charging, there will be a loss of data (sleep data or movement during the day) so that is something to be aware of going into the project.
+
+Fitbits are also not the most accurate for steps or heart rate (HR). If the user is consistent with wearing the device, it should still provide a trend of thier usage. 
+
+**More questions to answer**
+- How are you addressing licensing, privacy, security, and accessibility?
+- How did you verify the data’s integrity?
+- How does it help you answer your question?
+- Are there any problems with the data?
+
+### Key Tasks
+1. Download data and store it appropriately.
+
+The FitBit fitness tracker data can be download from [Kaggle](https://www.kaggle.com/datasets/arashnic/fitbit)
+
+I saved all of the data in a folder call 'fitbit_fitness_tracker_data_4.12.16-5.12.16' for easy access and to use as a backup of the original data if needed. This folder contains 18 Excel files with the data for 30 people.
+
+For this analysis I am going using the following spreadsheets: dailyActivity_merged, weightLogInfo_merged, sleepDay_merged, and heartrate_seconds_merged
+
+Load the packages needed and data
+
+```{r}
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(janitor)
+library(lubridate)
+library(readr)
+library(msgr)
+
+# Load the data
+
+activity_df <- read_csv("dailyActivity_merged.csv")
+hr_df <- read_csv("heartrate_seconds_merged.csv")
+sleep_df <- read_csv("sleepDay_merged.csv")
+weightlog_df <- read_csv("weightLogInfo_merged.csv")
+
+```
+
+
+2. Identify how it’s organized.
+
+The data is in long format and broken down into different metrics that are tracked by an hourly, minute or daily breakdown. Some of the data has been merged into a *dailyActivty_merged* file for a easy view of everything. 
+
+3. Sort and filter the data.
+
+
+## Exploring the Data
+
+Install and loading the packages needed: 
+
+```{r}
+install.packages("tidyverse")
+install.packages("msgr")
+```
+
+
+First I wanted to check each dataset to make sure that the values for the columns were the correct data type. 
+
+```{r}
+glimpse(activity_df)
+glimpse(hr_df)
+glimpse(sleep_df)
+glimpse(weightlog_df)
+```
+
+I noticed that the data type for **Date** is a character type. This will have to be converted to an actual date. 
+
+
+
+Next, I checked for the number of participants in each dataset.
+
+```{r}
+n_distinct(activity_df$Id)
+n_distinct(hr_df$Id)
+n_distinct(sleep_df$Id)
+n_distinct(weightlog_df$Id)
+```
+
+This reveled there are only 8 IDs in the weight log dataset. This is not a large enough sample to be statistically significant so I removed it from my analysis. 
+
+I then checked for any duplicated data in the remaining dataset
+
+```{r}
+sum(duplicated(activity_df))
+sum(duplicated(hr_df))
+sum(duplicated(sleep_df))
+```
+
+
+
